@@ -6,7 +6,7 @@ stages:
   jobs:
   - job: Build
     pool:
-      vmImage: 'self-raspberry0201'
+      name: 'self-raspberry0201'
     steps:
     - task: Npm@1
       inputs:
