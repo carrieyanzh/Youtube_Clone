@@ -24,3 +24,23 @@ stages:
         publishLocation: 'Container'
 
 
+- stage: Deploy 
+  jobs:
+  - job: Deploy
+    pool:
+      name: 'self-raspberry0201'
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Subscription0115(fcecc27b-6c00-431b-9002-2a7279d13ea4)'
+        appType: 'webAppLinux'
+        WebAppName: 'TechTutorial0203'
+        packageForLinux: '$(System.ArtifactsDirectory)/drop'
+        RuntimeStack: 'STATICSITE|1.0'
