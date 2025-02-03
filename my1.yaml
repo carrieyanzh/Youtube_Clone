@@ -1,0 +1,34 @@
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: refs/heads/main
+jobs:
+- job: Job_1
+  displayName: Agent job 1
+  pool:
+    name: self-raspberry0201
+  steps:
+  - checkout: self
+    clean: true
+    fetchTags: false
+  - task: Npm@1
+    displayName: npm install
+    inputs:
+      verbose: false
+  - task: Npm@1
+    displayName: build
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: run build
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Artifact drop
+  - task: AzureRmWebAppDeployment@4
+    displayName: 'Azure App Service Deploy: TechTutorial0203'
+    inputs:
+      ConnectedServiceName: c2e1a2cd-7bb4-4a2c-af66-ecc81305d6cd
+      WebAppKind: webAppLinux
+      WebAppName: TechTutorial0203
+      Package: $(System.DefaultWorkingDirectory)/build
+      RuntimeStack: STATICSITE|1.0
