@@ -1,0 +1,46 @@
+trigger: 
+- main
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      name: 'self-raspberry0201'
+    steps:
+    - task: Npm@1
+      inputs:
+        command: 'install'
+    - task: Npm@1
+      inputs:
+        command: 'custom'
+        customCommand: 'run build'
+
+    
+    - task: PublishBuildArtifacts@1      
+      inputs:
+        PathtoPublish: 'build'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+
+
+- stage: Deploy 
+  jobs:
+  - job: Deploy
+    pool:
+      vmImage: 'self-raspberry0201'
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Subscription0115(fcecc27b-6c00-431b-9002-2a7279d13ea4)'
+        appType: 'webAppLinux'
+        WebAppName: 'TechTutorial0203'
+        packageForLinux: '$(System.ArtifactsDirectory)/drop'
+        RuntimeStack: 'STATICSITE|1.0'
