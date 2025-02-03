@@ -28,7 +28,7 @@ stages:
   jobs:
   - job: Deploy
     pool:
-      vmImage: 'self-raspberry0201'
+      name: 'self-raspberry0201'
     steps:
     - task: DownloadBuildArtifacts@1
       inputs:
