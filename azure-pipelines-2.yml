@@ -24,12 +24,7 @@ stages:
         publishLocation: 'Container'
 
 
-- stage: Deploy 
-  jobs:
-  - job: Deploy
-    pool:
-      name: 'self-raspberry0201'
-    steps:
+
     - task: DownloadBuildArtifacts@1
       inputs:
         buildType: 'current'
